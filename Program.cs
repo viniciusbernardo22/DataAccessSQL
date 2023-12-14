@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Data;
+using Dapper;
+using DataAccess.Models;
 using Microsoft.Data.SqlClient;
 
 namespace DataAccess;
@@ -14,27 +16,13 @@ namespace DataAccess;
             
             using (var conn = new SqlConnection(connectionString))
             {
-                //Abrir conexão
-                conn.Open();
+                var categories = conn.Query<Category>("SELECT [Id], [Title] FROM [Category]");
 
-                //Executar comando SQL
-                using(var cmd = new SqlCommand())
+                foreach(var category in categories)
                 {
-                    //Setar conexão utilizada
-                    cmd.Connection = conn;
-                    //Setar tipo do comando a ser executado
-                    cmd.CommandType = CommandType.Text;
-                    cmd.CommandText = "SELECT [Id], [Title] FROM [Category]";
-                    var reader = cmd.ExecuteReader();
-                    while(reader.Read())
-                    {
-                        Console.WriteLine($"{reader.GetGuid(0)} - {reader.GetString(1)}");
-                    }
+                    Console.WriteLine($"{category.Id} - {category.Title}");
                 }
             }
            
-            
-
-            Console.WriteLine(args);
         }
     }
