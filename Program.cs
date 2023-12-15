@@ -8,8 +8,6 @@ namespace DataAccess;
 
 class Program
 {
-
-
     static void Main(string[] args)
     {
         const string connectionString =
@@ -17,12 +15,11 @@ class Program
 
         using (var conn = new SqlConnection(connectionString))
         {
-            UpdateCategory(conn);
+            CreateManyCategories(conn);
+            ListCategories(conn);
         }
 
     }
-
-
     static void ListCategories(SqlConnection connection)
     {
         var categories = connection.Query<Category>("SELECT [Id], [Title] FROM [Category]");
@@ -76,12 +73,105 @@ class Program
     {
         var updateQry = "UPDATE [Category] SET [Title]=@title WHERE [Id]=@id";
 
-        var rows = connection.Execute(updateQry, new {
+        var rows = connection.Execute(updateQry, new
+        {
             id = new Guid("af3407aa-11ae-4621-a2ef-2028b85507c4"),
             title = "Frontend"
         });
 
         Console.WriteLine($"{rows} registros atualizados");
+
+    }
+    static void DeleteCategory(SqlConnection connection)
+    {
+        var deleteQuery = "DELETE [Category] WHERE [Id]=@id";
+        var rows = connection.Execute(deleteQuery, new
+        {
+            id = new Guid("ea8059a2-e679-4e74-99b5-e4f0b310fe6f"),
+        });
+
+        Console.WriteLine($"{rows} registros excluídos");
+    }
+
+    static void CreateManyCategories(SqlConnection connection)
+    {
+        var category = new Category
+        {
+            Id = Guid.NewGuid(),
+            Title = "Google Cloud Platform",
+            Url = "GCP",
+            Description = "Carreira destinada a serviços do Google Cloud Platform",
+            Order = 10,
+            Summary = "GCP",
+            Featured = false,
+        };
+
+        var category2 = new Category
+        {
+            Id = Guid.NewGuid(),
+            Title = "Magalu Cloud",
+            Url = "MC",
+            Description = "Carreira destinada a serviços do Magalu Cloud",
+            Order = 9,
+            Summary = "MC",
+            Featured = true,
+        };
+
+        var category3 = new Category
+        {
+            Id = Guid.NewGuid(),
+            Title = "CloudFire",
+            Url = "CF",
+            Description = "Carreira destinada a serviços do CloudFire",
+            Order = 11,
+            Summary = "CF",
+            Featured = true,
+        };
+
+        var insertSQL = @"INSERT INTO 
+            [Category] 
+        VALUES(
+            @Id, 
+            @Title, 
+            @Url, 
+            @Summary, 
+            @Order, 
+            @Description,
+            @Featured
+            )";
+
+        var rows = connection.Execute(insertSQL, new[]{
+
+        new {
+            category.Id,
+            category.Title,
+            category.Url,
+            category.Summary,
+            category.Order,
+            category.Description,
+            category.Featured
+        },
+        new {
+            category2.Id,
+            category2.Title,
+            category2.Url,
+            category2.Summary,
+            category2.Order,
+            category2.Description,
+            category2.Featured
+        },
+        new {
+            category3.Id,
+            category3.Title,
+            category3.Url,
+            category3.Summary,
+            category3.Order,
+            category3.Description,
+            category3.Featured
+        }
+        }
+        );
+        Console.WriteLine($"{rows} Linhas inseridas");
 
     }
 }
