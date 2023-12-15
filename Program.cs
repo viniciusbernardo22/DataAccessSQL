@@ -15,7 +15,7 @@ class Program
 
         using (var conn = new SqlConnection(connectionString))
         {
-            CreateManyCategories(conn);
+            ExecuteReadProcedure(conn);
             ListCategories(conn);
         }
 
@@ -173,5 +173,30 @@ class Program
         );
         Console.WriteLine($"{rows} Linhas inseridas");
 
+    }
+
+    static void ExecuteProcedure(SqlConnection connection)
+    {
+        var procedure = "spDeleteStudent";
+
+        var param = new {StudentId = "47d015f6-da2c-4934-a55a-61cfb542e154"};
+
+        var rows = connection.Execute(procedure, param, commandType: CommandType.StoredProcedure);
+
+        Console.WriteLine($"{rows} linhas afetadas");
+    }
+
+    static void ExecuteReadProcedure(SqlConnection connection)
+    {
+        var procedure = "spGetCoursesByCategory";
+
+         var param = new {CategoryId = "09ce0b7b-cfca-497b-92c0-3290ad9d5142"};
+
+        var courses = connection.Query<Category>(procedure, param, commandType: CommandType.StoredProcedure);
+
+        foreach(var item in courses)
+        {
+            Console.WriteLine(item.Title);
+        }
     }
 }
