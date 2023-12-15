@@ -15,7 +15,7 @@ class Program
 
         using (var conn = new SqlConnection(connectionString))
         {
-            ExecuteReadProcedure(conn);
+            ExecuteScalar(conn);
             ListCategories(conn);
         }
 
@@ -68,7 +68,6 @@ class Program
         Console.WriteLine($"{rows} Linhas inseridas");
 
     }
-
     static void UpdateCategory(SqlConnection connection)
     {
         var updateQry = "UPDATE [Category] SET [Title]=@title WHERE [Id]=@id";
@@ -179,7 +178,7 @@ class Program
     {
         var procedure = "spDeleteStudent";
 
-        var param = new {StudentId = "47d015f6-da2c-4934-a55a-61cfb542e154"};
+        var param = new { StudentId = "47d015f6-da2c-4934-a55a-61cfb542e154" };
 
         var rows = connection.Execute(procedure, param, commandType: CommandType.StoredProcedure);
 
@@ -190,13 +189,51 @@ class Program
     {
         var procedure = "spGetCoursesByCategory";
 
-         var param = new {CategoryId = "09ce0b7b-cfca-497b-92c0-3290ad9d5142"};
+        var param = new { CategoryId = "09ce0b7b-cfca-497b-92c0-3290ad9d5142" };
 
         var courses = connection.Query<Category>(procedure, param, commandType: CommandType.StoredProcedure);
 
-        foreach(var item in courses)
+        foreach (var item in courses)
         {
             Console.WriteLine(item.Title);
         }
+    }
+
+    static void ExecuteScalar(SqlConnection connection)
+    {
+        var category = new Category
+        {
+            Title = "Amazon AWS",
+            Url = "Amazon",
+            Description = "Carreira destinada a serviços do AWS",
+            Order = 8,
+            Summary = "AWS Cloud",
+            Featured = false,
+        };
+
+        var insertSQL = @"INSERT INTO 
+            [Category] 
+            OUTPUT inserted.[Id]
+        VALUES(
+            NEWID(), 
+            @Title, 
+            @Url, 
+            @Summary, 
+            @Order, 
+            @Description,
+            @Featured
+            )";
+
+        var id = connection.ExecuteScalar<Guid>(insertSQL, new
+        {
+            category.Title,
+            category.Url,
+            category.Summary,
+            category.Order,
+            category.Description,
+            category.Featured
+        });
+        Console.WriteLine($"A categoria inserida foi: {id}");
+    
     }
 }

@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("sql")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f754dd7d8887a1e2b2a3c5e6c3321b92e158e00c")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+6d54a8cb6ed01acc8bf9cb03e0293dcddee5c20a")]
 [assembly: System.Reflection.AssemblyProductAttribute("sql")]
 [assembly: System.Reflection.AssemblyTitleAttribute("sql")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
